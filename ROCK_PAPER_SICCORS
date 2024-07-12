@@ -1,0 +1,52 @@
+import random
+
+def player(prev_play, opponent_history=[]):
+    if prev_play != "":
+        opponent_history.append(prev_play)
+    
+    # If it's the first move, return a random choice
+    if not opponent_history:
+        return random.choice(['R', 'P', 'S'])
+    
+    # Count occurrences of each move in opponent's history
+    move_counts = {
+        'R': opponent_history.count('R'),
+        'P': opponent_history.count('P'),
+        'S': opponent_history.count('S')
+    }
+    
+    # Find the most common move in opponent's history
+    most_common_move = max(move_counts, key=move_counts.get)
+    
+    # Predict the opponent's next move based on their most common move
+    if most_common_move == 'R':
+        return 'P'
+    elif most_common_move == 'P':
+        return 'S'
+    elif most_common_move == 'S':
+        return 'R'
+
+# Additional logic to mix up strategies
+def adaptive_strategy(prev_play, opponent_history=[]):
+    if prev_play != "":
+        opponent_history.append(prev_play)
+    
+    # Basic random strategy
+    if not opponent_history:
+        return random.choice(['R', 'P', 'S'])
+    
+    # Pattern recognition
+    if len(opponent_history) >= 3:
+        last_three = "".join(opponent_history[-3:])
+        if last_three == "RRR":
+            return 'P'
+        elif last_three == "PPP":
+            return 'S'
+        elif last_three == "SSS":
+            return 'R'
+    
+    # Use the player's function as a fallback
+    return player(prev_play, opponent_history)
+
+# Use the adaptive strategy as the player function
+player = adaptive_strategy
